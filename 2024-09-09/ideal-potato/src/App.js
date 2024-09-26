@@ -7,6 +7,7 @@ import Show from "./components/Show"
 import Context from "./components/Context"
 import ShoppingList from "./components/ShoppingList.js"
 import User from "./components/User.js"
+import Profile from './components/Profile';
 
 function App() {
   const [show, setShow] = useState(true)
@@ -26,6 +27,7 @@ function App() {
       <Name />
       <ShoppingList/>
       <User/>
+      <Profile name="Karmen" />
     </>
   )
 }
