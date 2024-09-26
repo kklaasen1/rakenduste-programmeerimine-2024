@@ -14,8 +14,8 @@ const Profile = ({ name }) => {
           ))}
         </ul>
         <form className="contact-form">
-          <input type="email" placeholder="Teie e-mail" required />
-          <textarea placeholder="Teie sõnum" required></textarea>
+          <input type="email" placeholder="E-mail" required />
+          <textarea placeholder="Sõnum" required></textarea>
           <button type="button">Saada</button>
         </form>
       </div>
