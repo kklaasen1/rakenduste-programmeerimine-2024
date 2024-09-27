@@ -1,12 +1,31 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 type SubmitCatProps = {
   fetchCats: () => void;
+  initialName?: string;
+  onUpdate?: (id: string, name: string) => Promise<void>;
+  id?: string;
 };
 
-const SubmitCat = ({ fetchCats }: SubmitCatProps) => {
+const SubmitCat = ({ fetchCats, initialName, onUpdate, id }: SubmitCatProps) => {
   const [name, setName] = useState("");
+
+  useEffect(() => {
+    if (initialName) {
+        setName(initialName);
+    }
+  }, [initialName]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (onUpdate && id) {
+        await onUpdate(id, name);
+    } else {
+        await submitCat();
+    }
+    fetchCats();
+  };
 
   const submitCat = async () => {
     try {
@@ -21,21 +40,12 @@ const SubmitCat = ({ fetchCats }: SubmitCatProps) => {
 
       if (response.ok) {
         console.log("Success", response);
-        // Snackbar success
       } else {
         console.warn("No success");
-        // Snackbar
       }
     } catch (error) {
       console.warn(error);
     }
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    submitCat();
-    setTimeout(fetchCats, 100);
   };
 
   return (
@@ -46,9 +56,10 @@ const SubmitCat = ({ fetchCats }: SubmitCatProps) => {
         <Stack>
           <TextField
             label="Cat name"
+            value={name}
             onChange={(event) => setName(event.target.value)}
           />
-          <Button type="submit">Add</Button>
+          <Button type="submit">{onUpdate ? "Update" : "Add"}</Button>
         </Stack>
       </form>
     </Box>

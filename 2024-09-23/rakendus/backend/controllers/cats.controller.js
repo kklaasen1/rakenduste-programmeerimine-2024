@@ -47,7 +47,7 @@ exports.create = (req, res) => {
         deleted: false,
     }
 
-    cats.push({ newCat });
+    cats.push(newCat);
 
     res.send(newCat);
 };
