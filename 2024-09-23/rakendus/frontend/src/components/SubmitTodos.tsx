@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 
 type SubmitTodoProps = {
@@ -13,6 +13,7 @@ const SubmitTodo = ({ fetchTodos, initialData, onUpdate, id }: SubmitTodoProps) 
   const [priority, setPriority] = useState<number | undefined>(undefined);
   const [status, setStatus] = useState("");
   const [category, setCategory] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (initialData) {
@@ -53,8 +54,16 @@ const SubmitTodo = ({ fetchTodos, initialData, onUpdate, id }: SubmitTodoProps) 
 
       if (response.ok) {
         console.log("Success", response);
+        setErrors({});
       } else {
-        console.warn("No success");
+        const data = await response.json();
+        if (data.errors) {
+          const validationErrors: { [key: string]: string } = {};
+          data.errors.forEach((err: { param: string; msg: string }) => {
+            validationErrors[err.param] = err.msg;
+          });
+          setErrors(validationErrors);
+        }
       }
     } catch (error) {
       console.warn(error);
@@ -65,12 +74,43 @@ const SubmitTodo = ({ fetchTodos, initialData, onUpdate, id }: SubmitTodoProps) 
     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
-          <TextField label="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-          <TextField label="Priority" type="number" value={priority} onChange={(e) => setPriority(Number(e.target.value))} />
-          <TextField label="Status" value={status} onChange={(e) => setStatus(e.target.value)} />
-          <TextField label="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+          <TextField 
+            label="Title" 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)}
+            error={!!errors.title}
+            helperText={errors.title}
+          />
+          <TextField 
+            label="Priority" 
+            type="number" 
+            value={priority} 
+            onChange={(e) => setPriority(Number(e.target.value))}
+            error={!!errors.priority}
+            helperText={errors.priority}
+            />
+          <TextField 
+            label="Status" 
+            value={status} 
+            onChange={(e) => setStatus(e.target.value)}
+            error={!!errors.status}
+            helperText={errors.status}
+            />
+          <TextField 
+            label="Category" 
+            value={category} 
+            onChange={(e) => setCategory(e.target.value)}
+            error={!!errors.category}
+            helperText={errors.category}
+            />
           <Button type="submit">{onUpdate ? "Update" : "Add"}</Button>
         </Stack>
+        {/* Display general error messages */}
+        {Object.keys(errors).length > 0 && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            Please correct the above errors.
+          </Typography>
+        )}
       </form>
     </Box>
   );
