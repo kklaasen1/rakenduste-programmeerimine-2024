@@ -56,8 +56,13 @@ const Cats = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h6">{cat.name}</Typography>
               <Box>
-                <Button onClick={() => handleEdit(cat)}>Edit</Button>
-                <Button onClick={() => handleDelete(cat.id)}>Delete</Button>
+                <Button onClick={() => handleEdit(cat)} >Edit</Button>
+                <Button 
+                  onClick={() => handleDelete(cat.id)}
+                  sx={{ backgroundColor: 'hotpink', color: 'white', '&:hover': { backgroundColor: '#FF1493' } }}
+                >
+                  Delete
+                </Button>
               </Box>
             </Box>
             {editingCat && editingCat.id === cat.id && (
